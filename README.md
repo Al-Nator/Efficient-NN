@@ -1,4 +1,4 @@
-# Homework 1 — Analytical Performance Model of a Small CNN
+# Homework 1 – Analytical Performance Model of a Small CNN
 
 ## Overview
 
@@ -6,10 +6,10 @@ This project builds and validates analytical models for the cost of one FP32 for
 
 The following quantities are modeled as functions of image size `S` and batch size `B`:
 
-- `FLOPs(S, B)` — number of floating-point operations;
-- `Memory(S, B)` — estimated GPU memory usage;
-- `Latency(S, B, θ)` — forward-pass latency;
-- `Energy(S, B, θ)` — energy consumed by one forward pass.
+- `FLOPs(S, B)` – number of floating-point operations;
+- `Memory(S, B)` – estimated GPU memory usage;
+- `Latency(S, B, θ)` – forward-pass latency;
+- `Energy(S, B, θ)` – energy consumed by one forward pass.
 
 The analytical predictions are compared with measurements on a real GPU. Latency and energy model parameters are calibrated only on the base grid, while randomly sampled image and batch sizes are used as validation points.
 

@@ -43,7 +43,6 @@ eval_df = df[~df["oom"]].copy()
 S_all = eval_df["S"].to_numpy()
 B_all = eval_df["B"].to_numpy()
 
-eval_df["pred_memory"] = memory(S_all, B_all)
 eval_df["pred_latency"] = latency(S_all, B_all, theta_latency)
 eval_df["pred_energy"] = energy(S_all, B_all, theta_energy)
 
@@ -61,8 +60,8 @@ def plot_predicted_vs_measured(measured_col, predicted_col, xlabel, ylabel, titl
     hi = all_vals.max()
 
     plt.figure(figsize=(6, 6))
-    plt.scatter(x_train, y_train, label="train")
-    plt.scatter(x_val, y_val, label="validation")
+    plt.scatter(x_train, y_train, label="calibration")
+    plt.scatter(x_val, y_val, label="held-out validation")
     plt.plot([lo, hi], [lo, hi], "--", label="ideal")
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -72,9 +71,28 @@ def plot_predicted_vs_measured(measured_col, predicted_col, xlabel, ylabel, titl
     plt.savefig(filename, dpi=200)
     plt.close()
 
-plot_predicted_vs_measured("memory", "pred_memory", "Measured memory (bytes)", "Predicted memory (bytes)", "Memory: predicted vs measured", "results/figures/memory_pred_vs_measured.png")
 plot_predicted_vs_measured("latency", "pred_latency", "Measured latency (s)", "Predicted latency (s)", "Latency: predicted vs measured", "results/figures/latency_pred_vs_measured.png")
 plot_predicted_vs_measured("energy", "pred_energy", "Measured energy (J)", "Predicted energy (J)", "Energy: predicted vs measured", "results/figures/energy_pred_vs_measured.png")
+
+plt.figure(figsize=(8, 6))
+
+for S_plot in [64, 128, 224, 512]:
+    subset = eval_df[eval_df["S"] == S_plot].sort_values("B")
+    B_plot = subset["B"].to_numpy()
+    measured = subset["memory"].to_numpy() / 1024**2
+    analytical = memory(np.full_like(B_plot, S_plot), B_plot) / 1024**2
+
+    plt.scatter(B_plot, measured, label=f"S={S_plot} measured")
+    plt.plot(B_plot, analytical, label=f"S={S_plot} analytical")
+
+plt.xscale("log", base=2)
+plt.xlabel("Batch size B")
+plt.ylabel("Memory (MiB)")
+plt.title("Analytical and measured memory vs batch size")
+plt.legend()
+plt.tight_layout()
+plt.savefig("results/figures/memory_vs_batch.png", dpi=200)
+plt.close()
 
 plt.figure(figsize=(8, 6))
 

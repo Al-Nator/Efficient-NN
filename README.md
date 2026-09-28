@@ -4,14 +4,14 @@
 
 This project builds and validates analytical models for the cost of one FP32 forward pass of a small convolutional neural network.
 
-The following quantities are modeled as functions of image size `S` and batch size `B`:
+FLOPs and memory are derived analytically from the network structure and tensor shapes. Latency and energy are parameterized analytical models calibrated on GPU measurements:
 
-- `FLOPs(S, B)` – number of floating-point operations;
-- `Memory(S, B)` – estimated GPU memory usage;
-- `Latency(S, B, θ)` – forward-pass latency;
-- `Energy(S, B, θ)` – energy consumed by one forward pass.
+- `FLOPs(S, B)` – analytically computed number of floating-point operations;
+- `Memory(S, B)` – analytically computed memory under the stated activation-lifetime assumption;
+- `Latency(S, B, θ)` – calibrated forward-pass latency model;
+- `Energy(S, B, θ)` – calibrated energy model.
 
-The analytical predictions are compared with measurements on a real GPU. Latency and energy model parameters are calibrated only on the base grid, while randomly sampled image and batch sizes are used as validation points.
+Only the base `(S, B)` grid is used to fit latency and energy parameters. Configurations containing randomly sampled image sizes or batch sizes are held out and used only for validation.
 
 ## Hardware and software
 
@@ -88,6 +88,8 @@ Memory(S, B) = 104 * B * S² + 3472 * B + 4161296 bytes
 ```
 
 ReLU is in-place and therefore does not introduce an additional activation buffer.
+
+`Memory(S, B)` has no fitted parameters. It is computed directly from tensor shapes and model parameters; measured peak memory is used only to check how the simplifying activation-lifetime assumption differs from real execution.
 
 ### Bytes moved
 
@@ -171,6 +173,12 @@ Additional validation batch sizes:
 
 This gives `11 × 12 = 132` configurations.
 
+### Calibration / validation split
+
+Latency and energy are fitted only on configurations where both `S` and `B` belong to the base grid.
+
+A configuration is marked `is_validation=True` if either its image size or batch size is one of the randomly sampled values. These points are never used during calibration and are used only to evaluate generalization.
+
 Latency is measured with CUDA events using 10 warm-up iterations and the median of 30 forward passes.
 
 Peak memory is measured with:
@@ -188,11 +196,11 @@ No OOM configuration was observed on the RTX 4070 Ti SUPER for the required meas
 
 The calibrated latency model matches both calibration and validation points closely. At small batch sizes, latency changes very little as `B` increases, which is consistent with a launch-bound regime where fixed GPU overhead dominates. As the batch size increases, latency grows approximately linearly and computation/memory traffic become dominant.
 
-The analytical memory model systematically overestimates the measured peak for most large configurations. This is expected because the analytical model sums all activations, while the real inference execution can release or reuse intermediate buffers. Some measured points also show discontinuities caused by different CUDA/cuDNN algorithms and temporary workspaces selected for particular tensor shapes.
+Memory is not fitted from the measurements. The analytical calculation is compared with `torch.cuda.max_memory_allocated()` only to validate the simplifying memory assumptions. It generally overestimates the measured peak because the formula sums all activations, while real inference can release or reuse intermediate buffers. Individual measured points may also differ because CUDA/cuDNN kernels can require temporary workspaces.
 
 The energy model gives a very accurate empirical fit over the tested grid and generalizes well to the held-out validation points. However, this should not be interpreted as an accurate decomposition of physical GPU energy consumption. For a fixed architecture, FLOPs, memory traffic and latency scale similarly with `B` and `S`, making their individual energy contributions difficult to identify independently.
 
-The `latency_vs_batch.png` plot illustrates the transition most clearly: small batches are dominated by nearly constant overhead, while larger batches move toward memory/compute-bound behavior.
+The `latency_vs_batch.png` plot shows measured latency together with the calibrated prediction across batch sizes. The `memory_vs_batch.png` plot separately compares the direct analytical memory calculation with measured peak allocation; memory is not calibrated.
 
 ## Reproduction
 

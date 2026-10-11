@@ -58,7 +58,7 @@ def measure_energy(model, x, repeats=100):
 
     def sample_power():
         while running:
-            power = pynvml.nvmlDeviceGetPowerUsage(handle) / 1000 
+            power = pynvml.nvmlDeviceGetPowerUsage(handle) / 1000
             powers.append(power)
             time.sleep(0.01)
 
@@ -130,13 +130,8 @@ if __name__ == "__main__":
             row["is_validation"] = (S in random_sizes or B in random_batches)
             results.append(row)
 
-            print(
-                f"S={S:3d}, B={B:3d}, "
-                f"latency={row['latency']}, "
-                f"memory={row['memory']}, "
-                f"energy={row['energy']}, "
-                f"OOM={row['oom']}"
-            )
+            metrics = f"latency={row['latency']}, memory={row['memory']}"
+            print(f"S={S:3d}, B={B:3d}, {metrics}, energy={row['energy']}, OOM={row['oom']}")
 
     df = pd.DataFrame(results)
     df.to_csv("results/measurements.csv", index=False)

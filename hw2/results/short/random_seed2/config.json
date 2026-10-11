@@ -1,0 +1,34 @@
+{
+  "mode": "random",
+  "seed": 2,
+  "initial": 1000,
+  "rounds": [
+    2000,
+    2000,
+    2500,
+    2500
+  ],
+  "epochs": [
+    1,
+    6,
+    4,
+    4
+  ],
+  "learning_rates": [
+    0.01,
+    0.1,
+    0.01,
+    0.001
+  ],
+  "batch_size": 128,
+  "workers": 0,
+  "device": "cuda",
+  "output": null,
+  "short": true,
+  "smoke": false,
+  "pool_size": 50000,
+  "test_size": 10000,
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+  "precision": "fp32"
+}

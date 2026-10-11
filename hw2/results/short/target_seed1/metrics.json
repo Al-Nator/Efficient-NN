@@ -1,0 +1,11 @@
+{
+  "mode": "target",
+  "seed": 1,
+  "budget": 10000,
+  "selection_seconds": 231.2178746520076,
+  "train_seconds": 119.77033421199303,
+  "loss": 1.1328446002960204,
+  "accuracy": 58.7,
+  "error": 41.3,
+  "precision": "fp32"
+}

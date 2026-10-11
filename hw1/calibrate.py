@@ -18,7 +18,8 @@ def latency_residuals(x):
     pred = latency(S, B, theta)
     return pred - y_latency
 
-latency_fit = least_squares(latency_residuals, x0=[1e-4, 10e12, 500e9], bounds=([0, 1e9, 1e9], [1, 1e15, 1e13]))
+latency_fit = least_squares(latency_residuals, x0=[1e-4, 10e12, 500e9],
+    bounds=([0, 1e9, 1e9], [1, 1e15, 1e13]))
 theta_latency = {"launch": latency_fit.x[0], "compute": latency_fit.x[1], "bandwidth": latency_fit.x[2]}
 
 latency_pred = latency(S, B, theta_latency)
@@ -31,7 +32,8 @@ def energy_residuals(x):
     return pred - y_energy
 
 energy_fit = least_squares(energy_residuals, x0=[30.0, 0.01, 0.01], bounds=(0, np.inf))
-theta_energy = {"base_power": energy_fit.x[0], "joule_per_gflop": energy_fit.x[1], "joule_per_gbyte": energy_fit.x[2], "latency": theta_latency}
+theta_energy = {"base_power": energy_fit.x[0], "joule_per_gflop": energy_fit.x[1],
+    "joule_per_gbyte": energy_fit.x[2], "latency": theta_latency}
 theta = {"latency": theta_latency, "energy": theta_energy}
 
 os.makedirs("results/figures", exist_ok=True)
@@ -71,8 +73,12 @@ def plot_predicted_vs_measured(measured_col, predicted_col, xlabel, ylabel, titl
     plt.savefig(filename, dpi=200)
     plt.close()
 
-plot_predicted_vs_measured("latency", "pred_latency", "Measured latency (s)", "Predicted latency (s)", "Latency: predicted vs measured", "results/figures/latency_pred_vs_measured.png")
-plot_predicted_vs_measured("energy", "pred_energy", "Measured energy (J)", "Predicted energy (J)", "Energy: predicted vs measured", "results/figures/energy_pred_vs_measured.png")
+plot_predicted_vs_measured("latency", "pred_latency", "Measured latency (s)",
+    "Predicted latency (s)", "Latency: predicted vs measured",
+    "results/figures/latency_pred_vs_measured.png")
+plot_predicted_vs_measured("energy", "pred_energy", "Measured energy (J)",
+    "Predicted energy (J)", "Energy: predicted vs measured",
+    "results/figures/energy_pred_vs_measured.png")
 
 plt.figure(figsize=(8, 6))
 

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+data/
+*.pt
+*.pth
+*.log
+results/modes_smoke/
+results/smoke.json
+results/runtime_estimate.json
+results/**/*.pdf

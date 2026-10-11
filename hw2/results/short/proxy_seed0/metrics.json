@@ -1,0 +1,11 @@
+{
+  "mode": "proxy",
+  "seed": 0,
+  "budget": 10000,
+  "selection_seconds": 51.16247645812109,
+  "train_seconds": 119.85354604700115,
+  "loss": 1.3418339361190796,
+  "accuracy": 50.44,
+  "error": 49.56,
+  "precision": "fp32"
+}

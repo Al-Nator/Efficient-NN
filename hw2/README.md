@@ -11,8 +11,8 @@ PyTorch 2.11.0, torchvision 0.26.0. Зависимости зафиксиров�
 - run.py - random, target и proxy с least confidence.
 - plot.py - сводная статистика и графики.
 - paper.pdf - статья.
-- report.md, report.pdf - отчёт.
-- slides.pptx, slides.pdf - презентация.
+- report.pdf - отчёт.
+- slides.pdf - презентация.
 - results/short/ - результаты девяти запусков.
 - assets/ - рисунки статьи для презентации.
 

@@ -9,7 +9,6 @@ PyTorch 2.11.0, torchvision 0.26.0. Зависимости зафиксиров�
 - models.py - PreAct ResNet-20 и ResNet-164.
 - train.py - обучение и оценка модели.
 - run.py - random, target и proxy с least confidence.
-- test_run.py - проверки отбора и разделения данных.
 - plot.py - сводная статистика и графики.
 - paper.pdf - статья.
 - report.md, report.pdf - отчёт.
@@ -28,9 +27,9 @@ uv sync --locked
 Эксперимент с бюджетом 10 000, 15 эпохами и тремя seed:
 
 ```bash
-for seed in 0 1 2; do
-    uv run run.py --short --mode all --seed "$seed" --device cuda || break
-done
+uv run run.py --short --mode all --seed 0 --device cuda
+uv run run.py --short --mode all --seed 1 --device cuda
+uv run run.py --short --mode all --seed 2 --device cuda
 uv run plot.py
 ```
 

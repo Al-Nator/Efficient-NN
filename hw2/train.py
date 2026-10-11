@@ -1,3 +1,5 @@
+import time
+
 import torch
 from torch.nn import functional as F
 
@@ -14,6 +16,7 @@ def train(model, loader, device, epochs=(1, 90, 45, 45),
         for group in optimizer.param_groups:
             group["lr"] = lr
         for _ in range(count):
+            start = time.perf_counter()
             model.train()
             loss_sum = correct = total = 0
             for x, y in loader:
@@ -22,6 +25,8 @@ def train(model, loader, device, epochs=(1, 90, 45, 45),
                 with torch.autocast("cuda", dtype=torch.float16, enabled=amp):
                     logits = model(x)
                     loss = F.cross_entropy(logits, y)
+                if not torch.isfinite(loss):
+                    raise ValueError("non-finite training loss")
                 scaler.scale(loss).backward()
                 scaler.step(optimizer)
                 scaler.update()
@@ -29,8 +34,10 @@ def train(model, loader, device, epochs=(1, 90, 45, 45),
                 correct += (logits.argmax(1) == y).sum().item()
                 total += len(y)
             metrics = {"loss": loss_sum / total, "accuracy": 100 * correct / total}
+            metrics["seconds"] = time.perf_counter() - start
             history.append({"epoch": len(history) + 1, "lr": lr, **metrics})
-            print(f"epoch {len(history)}: loss={metrics['loss']:.4f}, acc={metrics['accuracy']:.2f}%")
+            message = f"epoch {len(history)}: loss={metrics['loss']:.4f}"
+            print(f"{message}, acc={metrics['accuracy']:.2f}%, {metrics['seconds']:.2f}s")
     return history
 
 

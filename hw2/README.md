@@ -13,7 +13,7 @@ PyTorch 2.11.0, torchvision 0.26.0. Зависимости зафиксиров�
 - paper.pdf - статья.
 - report.pdf - отчёт.
 - slides.pdf - презентация.
-- results/short/ - результаты девяти запусков.
+- results/full/ - результаты полного эксперимента.
 - assets/ - рисунки статьи для презентации.
 
 Команды запускать из hw2/. CIFAR-10 скачивается автоматически в data/.
@@ -24,24 +24,16 @@ PyTorch 2.11.0, torchvision 0.26.0. Зависимости зафиксиров�
 uv sync --locked
 ```
 
-Эксперимент с бюджетом 10 000, 15 эпохами и тремя seed:
-
-```bash
-uv run run.py --short --mode all --seed 0 --device cuda
-uv run run.py --short --mode all --seed 1 --device cuda
-uv run run.py --short --mode all --seed 2 --device cuda
-uv run plot.py
-```
-
---short: пул 50 000, наборы 1 000 / 3 000 / 5 000 / 7 500 / 10 000, тест 10 000.
-Результаты и графики сохраняются в results/short/.
-Для отдельного режима используется --mode random, --mode target или --mode proxy.
-Для другой папки результатов используется --output PATH.
-
-Запуск с бюджетом 25 000 и 181 эпохой:
+Эксперимент с бюджетом 25 000, 181 эпохой и тремя seed:
 
 ```bash
 uv run run.py --mode all --seed 0 --device cuda
+uv run run.py --mode all --seed 1 --device cuda
+uv run run.py --mode all --seed 2 --device cuda
+uv run plot.py
 ```
 
-Результаты сохраняются в results/full/.
+Пул 50 000, наборы 1 000 / 5 000 / 10 000 / 15 000 / 20 000 / 25 000, тест 10 000.
+Результаты и графики сохраняются в results/full/.
+Для отдельного режима используется --mode random, --mode target или --mode proxy.
+Для другой папки результатов используется --output PATH.

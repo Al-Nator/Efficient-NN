@@ -1,0 +1,11 @@
+{
+  "mode": "target",
+  "seed": 0,
+  "precision": "fp16",
+  "budget": 25000,
+  "selection_seconds": 3354.346780844964,
+  "train_seconds": 1628.608603104949,
+  "loss": 0.22429488286972046,
+  "accuracy": 94.47,
+  "error": 5.530000000000001
+}

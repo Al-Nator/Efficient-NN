@@ -74,6 +74,7 @@ def run(mode, training, pool, test, args, output):
         "test_size": test_size, "torch": torch.__version__}
     precision = "fp16" if torch.device(args.device).type == "cuda" else "fp32"
     config["precision"] = precision
+    config["paper_commit"] = "348f90ac9caaa393117f1968f1aedf05dbfbac0f"
     if torch.device(args.device).type == "cuda":
         config["gpu"] = torch.cuda.get_device_name(args.device)
     (folder / "config.json").write_text(json.dumps(config, indent=2) + "\n")
@@ -90,7 +91,9 @@ def run(mode, training, pool, test, args, output):
             model = ResNet(20 if mode == "proxy" else 164)
             loader = DataLoader(Subset(training, labeled.tolist()), args.batch_size,
                 shuffle=True, num_workers=args.workers)
-            train(model, loader, args.device, args.epochs, args.learning_rates)
+            history = train(model, loader, args.device, args.epochs, args.learning_rates)
+            path = folder / f"round_{round_id + 1}.json"
+            path.write_text(json.dumps(history, indent=2) + "\n")
             added = select(model, pool, remaining, count, args.device,
                 args.batch_size, args.workers)
             del model

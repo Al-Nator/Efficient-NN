@@ -1,0 +1,36 @@
+{
+  "mode": "random",
+  "seed": 0,
+  "initial": 1000,
+  "rounds": [
+    4000,
+    5000,
+    5000,
+    5000,
+    5000
+  ],
+  "epochs": [
+    1,
+    90,
+    45,
+    45
+  ],
+  "learning_rates": [
+    0.01,
+    0.1,
+    0.01,
+    0.001
+  ],
+  "batch_size": 128,
+  "workers": 0,
+  "device": "cuda",
+  "output": "results/full",
+  "short": false,
+  "smoke": false,
+  "pool_size": 50000,
+  "test_size": 10000,
+  "torch": "2.11.0+cu128",
+  "precision": "fp16",
+  "paper_commit": "348f90ac9caaa393117f1968f1aedf05dbfbac0f",
+  "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER"
+}

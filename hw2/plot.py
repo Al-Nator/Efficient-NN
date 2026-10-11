@@ -1,3 +1,4 @@
+import argparse
 import csv
 import json
 from pathlib import Path
@@ -6,7 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-folder = Path('results/short')
+parser = argparse.ArgumentParser()
+parser.add_argument('folder', nargs='?', default='results/full')
+folder = Path(parser.parse_args().folder)
 rows = list(csv.DictReader((folder / 'runs.csv').open()))
 precision = {r['precision'] for r in rows}
 if len(precision) != 1:
@@ -36,7 +39,7 @@ means = [summary[m]['error']['mean'] for m in modes]
 std = [summary[m]['error']['std'] for m in modes]
 ax.bar(modes, means, yerr=std, capsize=6, color=['#999999', '#555555', '#bbbbbb'])
 ax.set_ylabel('Test error, %')
-ax.set_ylim(0, 60)
+ax.set_ylim(0, max(means[i] + std[i] for i in range(3)) * 1.2)
 ax.spines[['top', 'right']].set_visible(False)
 fig.tight_layout()
 fig.savefig(folder / 'error.png', dpi=200)
@@ -51,7 +54,7 @@ ax.bar(x, select, color='#555555', label='Отбор')
 ax.bar(x, train, bottom=select, color='#bbbbbb', label='Обучение target')
 ax.set_xticks(x, modes)
 ax.set_ylabel('Время, мин')
-ax.set_ylim(0, 8)
+ax.set_ylim(bottom=0)
 ax.legend(frameon=False, fontsize=15)
 ax.spines[['top', 'right']].set_visible(False)
 fig.tight_layout()
